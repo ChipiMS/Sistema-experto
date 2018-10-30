@@ -4,46 +4,43 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
-public class ArchivoSecuencialIndexado{
+public class BaseDeConocimientos{
     private final int registerLength;
     private Arbol arbol;
     private int direccionSiguiente, direccionActual, borrados, desbordados, ordenados, direccionReorganizados;
     private Indice indice;
-    private Clausula clausula;
-    ArchivoSecuencialIndexado() throws IOException, FileNotFoundException, ClassNotFoundException {
+    BaseDeConocimientos() throws IOException, FileNotFoundException, ClassNotFoundException {
         registerLength = 1024;
-        clausula = new Clausula();
         indice = new Indice();
         recuperarArbol();
         recuperarControl();
     }
-    public void actualizar() throws FileNotFoundException, IOException{
+    public void actualizar(Clausula clausula) throws FileNotFoundException, IOException{
         RandomAccessFile escritor;
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Llave a actualizar:");
-        indice.llave = clausula.llave = sc.nextInt();
+        clausula.llave = indice.llave;
         indice.direccion = arbol.buscar(indice.llave);
         if(indice.direccion == -1){
-            System.out.println("No hay una clausula con la llave "+indice.llave);
+            JOptionPane.showMessageDialog(null, "No hay una clausula con la llave "+indice.llave);
         }
         else{
-            leeClausula();
             escritor = new RandomAccessFile("maestroClausula", "rw");
             escritor.seek(indice.direccion*registerLength);
             escribeClausula(clausula, escritor);
             escritor.close();
         }
     }
-    public void borrar() throws FileNotFoundException, IOException, ClassNotFoundException{
+    public void borrar(int llave) throws FileNotFoundException, IOException, ClassNotFoundException{
         RandomAccessFile escritor;
-        Scanner sc = new Scanner(System.in);
+        Clausula clausula = new Clausula();
         System.out.println("Llave a borrar:");
-        int llave = indice.llave = clausula.llave = sc.nextInt();
+        indice.llave = clausula.llave = llave;
         indice.direccion = arbol.buscar(indice.llave);
         if(indice.direccion == -1){
-            System.out.println("No hay una clausula con la llave "+indice.llave);
+            JOptionPane.showMessageDialog(null, "No hay una clausula con la llave "+indice.llave);
         }
         else{
             clausula.llave = 0;
@@ -74,18 +71,15 @@ public class ArchivoSecuencialIndexado{
         }
         raf.writeChars(aEscribir.predicado);
     }
-    public void insertar() throws IOException{
-        Scanner sc = new Scanner(System.in);
+    public void insertar(Clausula clausula) throws IOException{
         boolean existe = true;
         RandomAccessFile lector = null, escritorIndice, escritor;
-        System.out.println("Clave del clausula:");
-        indice.llave = clausula.llave = sc.nextInt();
+        indice.llave = clausula.llave;
         indice.direccion = direccionSiguiente;
         if(arbol.buscar(clausula.llave) != -1){
-            System.out.println("La clave ya existe");
+            JOptionPane.showMessageDialog(null, "La clave ya existe");
         }
         else{
-            leeClausula();
             try{
                 lector = new RandomAccessFile("maestroClausula", "r");
             }
@@ -118,32 +112,6 @@ public class ArchivoSecuencialIndexado{
             reescribirControl();
         }
     }
-    public void leeClausula(){
-        int predicados = 0;
-        boolean leerMas = true;
-        Scanner sc = new Scanner(System.in);
-        StringBuffer buffer;
-        String predicado;
-        while(leerMas){
-            System.out.println("Escribe un predicado negado, si no quieres agregar otro, escribe *");
-            predicado = sc.next();
-            buffer = new StringBuffer(predicado);
-            buffer.setLength(30);
-            clausula.predicadosNegados[predicados] = buffer.toString();
-            if(clausula.predicadosNegados[predicados].charAt(0) == '*'){
-                leerMas = false;
-            }
-            predicados++;
-            if(predicados == 16){
-                leerMas = false;
-            }
-        }
-        System.out.println("Escribe un predicado no negado, si no quieres agregarlo, escribe *");
-        predicado = sc.next();
-        buffer = new StringBuffer(predicado);
-        buffer.setLength(30);
-        clausula.predicado = buffer.toString();
-    }
     private void marcarIndice(int llave) throws IOException, ClassNotFoundException{
         boolean existe = true;
         RandomAccessFile lector = null;
@@ -168,52 +136,27 @@ public class ArchivoSecuencialIndexado{
             lector.close();
         }
     }
-    private void muestraClausula(Clausula l) {
-        boolean primero = true;
-        int i;
-        System.out.println();
-        System.out.println(l.llave);
-        for(i = 0; i < 16 && l.predicadosNegados[i].charAt(0) != '*'; i++){
-            if(!primero){
-                System.out.print(" v ");
-            }
-            else{
-                primero = false;
-            }
-            System.out.print("¬"+l.predicadosNegados[i].trim());
-        }
-        if(l.predicado.charAt(0) != '*'){
-            if(!primero){
-                System.out.print(" v ");
-            }
-            else{
-                primero = false;
-            }
-            System.out.print(l.predicado.trim());
-        }
-        System.out.println();
-    }
-    private void recorreArbol(Nodo nodo, RandomAccessFile raf) throws IOException{
+    private void recorreArbol(Nodo nodo, RandomAccessFile raf, ArrayList<Clausula> arreglo) throws IOException{
+        Clausula clausula;
         if(nodo.izquierda != null){
-            recorreArbol(nodo.izquierda, raf);
+            recorreArbol(nodo.izquierda, raf, arreglo);
         }
         if(direccionActual != nodo.direccion){
             raf.seek(nodo.direccion*registerLength);
             direccionActual = nodo.direccion;
         }
         clausula = recuperaClausula(raf);
-        muestraClausula(clausula);
+        arreglo.add(clausula);
         direccionActual++;
         if(nodo.derecha != null){
-            recorreArbol(nodo.derecha, raf);
+            recorreArbol(nodo.derecha, raf, arreglo);
         }
     }
     private void recorreArbolReestructurar(Nodo nodo, RandomAccessFile lector, RandomAccessFile escritor) throws IOException{
-        
+        Clausula clausula;
         if(nodo.izquierda != null){
             recorreArbolReestructurar(nodo.izquierda, lector, escritor);
         }
-        //System.out.println(nodo.llave+" "+nodo.direccion);
         if(direccionActual != nodo.direccion){
             lector.seek(nodo.direccion*registerLength);
             direccionActual = nodo.direccion;
@@ -227,22 +170,21 @@ public class ArchivoSecuencialIndexado{
             recorreArbolReestructurar(nodo.derecha, lector, escritor);
         }
     }
-    public void recuperarAleatorio() throws FileNotFoundException, IOException{
+    public Clausula recuperarAleatorio(int llave) throws FileNotFoundException, IOException{
+        Clausula clausula = null;
         RandomAccessFile lector = null;
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Llave a recuperar:");
-        indice.llave = sc.nextInt();
+        indice.llave = llave;
         indice.direccion = arbol.buscar(indice.llave);
         if(indice.direccion == -1){
-            System.out.println("No hay clausulas con la llave "+indice.llave);
+            JOptionPane.showMessageDialog(null, "No hay una clausula con la llave "+indice.llave);
         }
         else{
             lector = new RandomAccessFile("maestroClausula", "r");
             lector.seek(indice.direccion*registerLength);
             clausula = recuperaClausula(lector);
-            muestraClausula(clausula);
             lector.close();
         }
+        return clausula;
     }
     private void recuperarArbol() throws IOException{
         boolean existe = true;
@@ -307,10 +249,12 @@ public class ArchivoSecuencialIndexado{
         l.predicado = new String(premisa).replace('\0', ' ');
         return l;
     }
-    public void recuperarSecuencial() throws FileNotFoundException, IOException{
+    public Clausula[] recuperarSecuencial() throws FileNotFoundException, IOException{
+        Clausula[] clausulas;
         boolean existe = true;
         RandomAccessFile lector = null;
         direccionActual = 0;
+        ArrayList<Clausula> arreglo = new ArrayList<Clausula>();
         try{
             lector = new RandomAccessFile("maestroClausula", "r");
         }
@@ -319,10 +263,15 @@ public class ArchivoSecuencialIndexado{
         }
         if(existe){
             if(arbol.raiz != null){
-                recorreArbol(arbol.raiz, lector);
+                recorreArbol(arbol.raiz, lector, arreglo);
             }
             lector.close();
         }
+        clausulas = new Clausula[arreglo.size()];
+        for(int i = 0; i < arreglo.size(); i++){
+            clausulas[i] = arreglo.get(i);
+        }
+        return clausulas;
     }
     private void reescribirControl() throws IOException{
         boolean existe = true;
