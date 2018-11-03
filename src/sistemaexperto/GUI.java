@@ -1,14 +1,19 @@
 package sistemaexperto;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -16,10 +21,28 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 public class GUI extends JFrame{
     BaseDeConocimientos baseDeConocimientos;
     JTextArea messages;
     JPanel panelHechos;
+    Predicado predicados[] = new Predicado[]{
+        new Predicado("x es amigo de y", "p(x,y)", new String[][]{
+            new String[]{},
+            new String[]{"Chipi", "ABC", "Felipe"}
+        }),
+        new Predicado("x es amigo de y", "p(x,y)", new String[][]{
+            new String[]{},
+            new String[]{"Chipi", "ABC", "Felipe"}
+        }),
+        new Predicado("x es amigo de y", "p(x,y)", new String[][]{
+            new String[]{},
+            new String[]{"Chipi", "ABC", "Felipe"}
+        })
+    };
+    JButton botonesHechos[];
+    JPanel panelesHechos[];
+    Component variablesHechos[][];
     /*
       ____ _   _ ___ 
      / ___| | | |_ _|
@@ -206,7 +229,67 @@ public class GUI extends JFrame{
         return menuBar;
     }
     
-    private void interfazHechos(JPanel panelHechos) {
-        
+    private void interfazHechos(JPanel panelHechos){
+        panelHechos.setLayout(new BoxLayout(panelHechos, BoxLayout.PAGE_AXIS));
+        int i, j, k;
+        JPanel predicado;
+        panelesHechos = new JPanel[predicados.length];
+        botonesHechos = new JButton[predicados.length];
+        variablesHechos = new Component[predicados.length][10];
+        JComboBox combo;
+        for(i = 0; i < predicados.length; i++){
+            panelesHechos[i] = new JPanel();
+            panelesHechos[i].setLayout(new BoxLayout(panelesHechos[i], BoxLayout.PAGE_AXIS));
+            panelesHechos[i].add(new JLabel(predicados[i].nombre));
+            predicado = new JPanel();
+            predicado.setLayout(new FlowLayout());
+            for(j = 0; j < predicados[i].variables.length; j++){
+                if(predicados[i].variables[j].length == 0){
+                    variablesHechos[i][j] = new JTextField();
+                    variablesHechos[i][j].setPreferredSize(new Dimension(100, 30));
+                }
+                else{
+                    combo = new JComboBox<>();
+                    for(k = 0; k < predicados[i].variables[j].length; k++){
+                        combo.addItem(predicados[i].variables[j][k]);
+                    }
+                    variablesHechos[i][j] = combo;
+                }
+                predicado.add(variablesHechos[i][j]);
+            }
+            panelesHechos[i].add(predicado);
+            botonesHechos[i] = new JButton("Agregar hecho");
+            botonesHechos[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae){
+                    int i, indicePredicado = 0;
+                    String hecho;
+                    for(i = 0; i < predicados.length; i++){
+                        if(ae.getSource() == botonesHechos[i]){
+                            indicePredicado = i;
+                        }
+                    }
+                    hecho = predicados[indicePredicado].predicado.split("\\(")[0];
+                    hecho += "(";
+                    for(i = 0; i < predicados[indicePredicado].variables.length; i++){
+                        if(i > 0){
+                            hecho += ",";
+                        }
+                        if(predicados[indicePredicado].variables[i].length == 0){
+                            hecho += ((JTextField)variablesHechos[indicePredicado][i]).getText();
+                        }
+                        else{
+                            hecho += ((JComboBox)variablesHechos[indicePredicado][i]).getSelectedItem();
+                        }
+                    }
+                    hecho += ")";
+                    panelesHechos[indicePredicado].add(new JLabel(hecho));
+                    panelHechos.repaint();
+                    panelHechos.revalidate();
+                }
+            });
+            panelesHechos[i].add(botonesHechos[i]);
+            panelHechos.add(panelesHechos[i]);
+        }
     }
 }
