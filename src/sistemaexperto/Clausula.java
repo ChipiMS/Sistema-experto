@@ -73,7 +73,7 @@ class Clausula {
         int i;
         String clausula = "";
         clausula += this.llave+"  ";
-        for(i = 0; i < 16 && this.predicadosNegados[i].charAt(0) != '*'; i++){
+        for(i = 0; i < 16 && this.predicadosNegados[i].charAt(0) != '*' && this.predicadosNegados[i].charAt(0) != ' '; i++){
             if(!primero){
                 clausula += " v ";
             }

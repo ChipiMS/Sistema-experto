@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 public class BaseDeConocimientos{
@@ -36,7 +35,6 @@ public class BaseDeConocimientos{
     public void borrar(int llave) throws FileNotFoundException, IOException, ClassNotFoundException{
         RandomAccessFile escritor;
         Clausula clausula = new Clausula();
-        System.out.println("Llave a borrar:");
         indice.llave = clausula.llave = llave;
         indice.direccion = arbol.buscar(indice.llave);
         if(indice.direccion == -1){
@@ -176,7 +174,7 @@ public class BaseDeConocimientos{
         indice.llave = llave;
         indice.direccion = arbol.buscar(indice.llave);
         if(indice.direccion == -1){
-            JOptionPane.showMessageDialog(null, "No hay una clausula con la llave "+indice.llave);
+            //JOptionPane.showMessageDialog(null, "No hay una clausula con la llave "+indice.llave);
         }
         else{
             lector = new RandomAccessFile("maestroClausula", "r");
