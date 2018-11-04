@@ -43,14 +43,16 @@ public class GUI extends JFrame{
     JButton botonesHechos[];
     JPanel panelesHechos[];
     Component variablesHechos[][];
+    BaseDeHechos baseDeHechos;
     /*
       ____ _   _ ___ 
      / ___| | | |_ _|
     | |  _| | | || | 
     | |_| | |_| || | 
      \____|\___/|___|*/
-    GUI(BaseDeConocimientos baseDeConocimientos){
+    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos){
         this.baseDeConocimientos = baseDeConocimientos;
+        this.baseDeHechos = baseDeHechos;
         Container cp = getContentPane();
         setSize(600, 600);
         setTitle("Compilador");
@@ -284,6 +286,7 @@ public class GUI extends JFrame{
                     }
                     hecho += ")";
                     panelesHechos[indicePredicado].add(new JLabel(hecho));
+                    baseDeHechos.agregarHecho(hecho);
                     panelHechos.repaint();
                     panelHechos.revalidate();
                 }
