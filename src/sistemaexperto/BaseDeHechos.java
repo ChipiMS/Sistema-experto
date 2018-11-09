@@ -13,6 +13,10 @@ public class BaseDeHechos {
         hechos.add(hecho);
     }
     String[] regresaHechos(){
-        return (String[])hechos.toArray();
+        String[] base = new String[hechos.size()];
+        for(int i = 0; i < base.length; i++){
+            base[i] = hechos.get(i);
+        }
+        return base;
     }
 }
