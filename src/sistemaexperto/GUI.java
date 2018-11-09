@@ -23,21 +23,59 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 public class GUI extends JFrame{
+    MotorDeInferencia motor;
     BaseDeConocimientos baseDeConocimientos;
     JTextArea messages;
     JPanel panelHechos;
     Predicado predicados[] = new Predicado[]{
-        new Predicado("x es amigo de y", "p(x,y)", new String[][]{
+        new Predicado("p sufrió ch", "b(p,ch)", new String[][]{
             new String[]{},
-            new String[]{"Chipi", "ABC", "Felipe"}
+            new String[]{"Susto"}
         }),
-        new Predicado("x es amigo de y", "p(x,y)", new String[][]{
+        new Predicado("p sufre sh", "h(p,sh)", new String[][]{
             new String[]{},
-            new String[]{"Chipi", "ABC", "Felipe"}
+            new String[]{"Miedo"}
         }),
-        new Predicado("x es amigo de y", "p(x,y)", new String[][]{
+        new Predicado("p padece histeria", "c(p)", new String[][]{
+            new String[]{}
+        }),
+        new Predicado("p sufrió co", "d(p,co)", new String[][]{
             new String[]{},
-            new String[]{"Chipi", "ABC", "Felipe"}
+            new String[]{"Susto"}
+        }),
+        new Predicado("p sufre so", "i(p,so)", new String[][]{
+            new String[]{},
+            new String[]{"Miedo"}
+        }),
+        new Predicado("p es obsesivo compulsivo", "e(p)", new String[][]{
+            new String[]{}
+        }),
+        new Predicado("p sufrió cf", "f(p,cf)", new String[][]{
+            new String[]{},
+            new String[]{"Susto"}
+        }),
+        new Predicado("p sufre sf", "j(p,sf)", new String[][]{
+            new String[]{},
+            new String[]{"Miedo"}
+        }),
+        new Predicado("p tiene fobias", "g(p)", new String[][]{
+            new String[]{}
+        }),
+        new Predicado("p padece neurosis", "a(p)", new String[][]{
+            new String[]{}
+        }),
+        new Predicado("p necesita ser tratado psicológicamente", "k(p)", new String[][]{
+            new String[]{}
+        }),
+        new Predicado("s es un sintoma físico", "m(s)", new String[][]{
+            new String[]{"colitis"}
+        }),
+        new Predicado("p sufre s", "o(p,s)", new String[][]{
+            new String[]{},
+            new String[]{"colitis"}
+        }),
+        new Predicado("p necesita ser tratado psiquiatricamente", "l(p)", new String[][]{
+            new String[]{}
         })
     };
     JButton botonesHechos[];
@@ -50,9 +88,10 @@ public class GUI extends JFrame{
     | |  _| | | || | 
     | |_| | |_| || | 
      \____|\___/|___|*/
-    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos){
+    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos, MotorDeInferencia motor){
         this.baseDeConocimientos = baseDeConocimientos;
         this.baseDeHechos = baseDeHechos;
+        this.motor = motor;
         Container cp = getContentPane();
         setSize(600, 600);
         setTitle("Compilador");
@@ -223,7 +262,12 @@ public class GUI extends JFrame{
         buttonCompile.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                JOptionPane.showMessageDialog(cp, "No implementado.");
+                try {
+                    String meta = JOptionPane.showInputDialog(cp, "Meta:", JOptionPane.INPUT_VALUE_PROPERTY);
+                    motor.inferir(meta);
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         menuBar.add(buttonCompile);
