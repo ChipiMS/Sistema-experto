@@ -34,11 +34,9 @@ public class MotorDeInferencia {
     private int[] equiparar(){
         int[] x={0};
         /*Regla por regla hacer*/
-        /*si regla no esta marcada o no esta en el conjunto conflicto*/
-        for (int i = 0; i < clausulas.length; i++) {
-            analisar();
-        }
-            /*si hay que agregar se agrega*/
+        /*si regla no esta marcada o no esta en el conjunto conflicto analisar*/
+        analisar();
+        /*si hay que agregar se agrega*/
         return x;
     }
     
@@ -62,7 +60,7 @@ public class MotorDeInferencia {
         /*variable por variable del hecho*/
         /*si la variable no esta agregada*/
             /*se agrega*/
-        /*si no*/
+        /*si no*//////////////////////////////////////////////////////////aqui voy
             /*se compara si es igual
               si no son iguales
               regresar error no se pudo*/
@@ -76,6 +74,8 @@ public class MotorDeInferencia {
             for (int j = 0; j < variableshecho.length; j++) {
                 if(!variables[i].equals(variableshecho[j])){
                     variables[variables.length]=variableshecho[j];
+                }else{
+                    
                 }
             }
         }
