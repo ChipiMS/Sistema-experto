@@ -35,7 +35,9 @@ public class MotorDeInferencia {
         int[] x={0};
         /*Regla por regla hacer*/
         /*si regla no esta marcada o no esta en el conjunto conflicto*/
+        for (int i = 0; i < clausulas.length; i++) {
             analisar();
+        }
             /*si hay que agregar se agrega*/
         return x;
     }
@@ -45,8 +47,13 @@ public class MotorDeInferencia {
         /*Todos los hechos del primer predicado ejecutar comparar*/
         for (int i = 0; i < clausulas.length; i++) {
             String predicadoNegado=clausulas[i].predicadosNegados[i];
-            
-            comparar();
+            String nombrepredicado = predicadoNegado.split("\\(")[0];
+            for (int j = 0; j < hechos.length; j++) {
+                String nombreHecho=hechos[j].split("\\(")[0];
+                if(nombreHecho.equals(nombrepredicado)){
+                    comparar(hechos[j],variables);
+                }
+            }
         }
         return variables;
     }
