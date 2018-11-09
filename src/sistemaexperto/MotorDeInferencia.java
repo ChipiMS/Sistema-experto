@@ -13,6 +13,7 @@ public class MotorDeInferencia {
     ElementoCC elementoCC;
     ArrayList<String> nombreVariablesClausula;
     ArrayList<String> valoresVariablesClausula;
+    boolean[] reglasUsadas;
 
     public MotorDeInferencia(BaseDeConocimientos BC, BaseDeHechos BH) {
         this.BC = BC;
@@ -20,8 +21,13 @@ public class MotorDeInferencia {
     }
     
     public void inferir() throws IOException{
+        int i;
         hechos=BH.regresaHechos();
         clausulas=BC.recuperarSecuencial();
+        reglasUsadas = new boolean[clausulas.length];
+        for(i = 0; i < reglasUsadas.length; i++){
+            reglasUsadas[i] = false;
+        }
         conjuntoConflicto = new ConjuntoConflicto();
         String meta="";
         while(!contenida(meta,hechos) && !conjuntoConflicto.estaVacio()){
@@ -36,14 +42,18 @@ public class MotorDeInferencia {
     }
     
     private void equiparar(){
-        int[] x={0};
         /*Regla por regla hacer*/
         /*si regla no esta marcada o no esta en el conjunto conflicto analisar*/
-        analisar(clausula);
-        if(elementoCC.nombreVariables != null){ //si hay que agregar se agrega
-            //agregar elemento cc al conjunto conflicto usando la clase de conjunto conflicto
+        int i;
+        for(i = 0; i < clausulas.length; i++){
+            if(!reglasUsadas[i]){
+                analisar(clausulas[i]);
+                if(elementoCC.nombreVariables != null){ //si hay que agregar se agrega
+                    reglasUsadas[i] = true;
+                    conjuntoConflicto.agregarElemento(elementoCC); //agregar elemento al conjunto conflicto
+                }
+            }
         }
-        return x;
     }
     
     private String[] analisar(Clausula clausula){
@@ -118,7 +128,6 @@ public class MotorDeInferencia {
         if(predicado == hechosInvolucrados.size()-1){ //si es el último predicado negado
             elementoCC.nombreVariables = (String[])nombreVariablesClausula.toArray();
             elementoCC.variables.add((String[])valoresVariablesClausula.toArray());
-            conjuntoConflicto.agregarElemento(elementoCC);
         }
         else{
             hechosDelSiguientePredicado = hechosInvolucrados.get(predicado+1);
