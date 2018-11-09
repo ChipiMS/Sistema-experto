@@ -64,7 +64,7 @@ public class MotorDeInferencia {
             /*se aplica*/
         /*si no*/
             /*vuelve a comparar*/
-        String[] variableshecho=hecho.split("(")[1].split(")")[0].split(",");
+        String[] variableshecho = hecho.split("\\(")[1].split("\\)")[0].split(",");
         for (int i = 0; i < variables.length; i++) {
             for (int j = 0; j < variableshecho.length; j++) {
                 if(!variables[i].equals(variableshecho[j])){
