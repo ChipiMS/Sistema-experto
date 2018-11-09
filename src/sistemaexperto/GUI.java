@@ -1,5 +1,6 @@
 package sistemaexperto;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -23,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 public class GUI extends JFrame{
-    MotorDeInferencia motor;
     BaseDeConocimientos baseDeConocimientos;
     JTextArea messages;
     JPanel panelHechos;
@@ -88,10 +88,9 @@ public class GUI extends JFrame{
     | |  _| | | || | 
     | |_| | |_| || | 
      \____|\___/|___|*/
-    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos, MotorDeInferencia motor){
+    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos){
         this.baseDeConocimientos = baseDeConocimientos;
         this.baseDeHechos = baseDeHechos;
-        this.motor = motor;
         Container cp = getContentPane();
         setSize(600, 600);
         setTitle("Compilador");
@@ -107,6 +106,7 @@ public class GUI extends JFrame{
         
         messages = new JTextArea("Mensajes");
         messages.setEnabled(false);
+        messages.setBackground(Color.black);
         JScrollPane messagesScrollPane = new JScrollPane(messages);
         messagesScrollPane.setMinimumSize(new Dimension(100, 200));
         messagesScrollPane.setPreferredSize(new Dimension(100, 200));
@@ -263,8 +263,10 @@ public class GUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    String meta = JOptionPane.showInputDialog(cp, "Meta:", JOptionPane.INPUT_VALUE_PROPERTY);
-                    motor.inferir(meta);
+                    MotorDeInferencia motor = new MotorDeInferencia(baseDeConocimientos, baseDeHechos);
+                    String meta = JOptionPane.showInputDialog(cp, "Meta:", JOptionPane.INPUT_VALUE_PROPERTY), mensaje;
+                    mensaje = motor.inferir(meta);
+                    messages.append("\n"+mensaje);
                 } catch (IOException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -279,6 +281,7 @@ public class GUI extends JFrame{
         panelHechos.setLayout(new BoxLayout(panelHechos, BoxLayout.PAGE_AXIS));
         int i, j, k;
         JPanel predicado;
+        String[] nombreVariables;
         panelesHechos = new JPanel[predicados.length];
         botonesHechos = new JButton[predicados.length];
         variablesHechos = new Component[predicados.length][10];
@@ -286,10 +289,12 @@ public class GUI extends JFrame{
         for(i = 0; i < predicados.length; i++){
             panelesHechos[i] = new JPanel();
             panelesHechos[i].setLayout(new BoxLayout(panelesHechos[i], BoxLayout.PAGE_AXIS));
-            panelesHechos[i].add(new JLabel(predicados[i].nombre));
+            panelesHechos[i].add(new JLabel(predicados[i].predicado+": "+predicados[i].nombre));
+            nombreVariables = predicados[i].predicado.split("\\(")[1].split("\\)")[0].split(",");
             predicado = new JPanel();
             predicado.setLayout(new FlowLayout());
             for(j = 0; j < predicados[i].variables.length; j++){
+                predicado.add(new JLabel(nombreVariables[j]+":"));
                 if(predicados[i].variables[j].length == 0){
                     variablesHechos[i][j] = new JTextField();
                     variablesHechos[i][j].setPreferredSize(new Dimension(100, 30));
