@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MotorDeInferencia {
+    String moduloJustificacion;
     BaseDeConocimientos BC;
     BaseDeHechos BH;
     Clausula[] clausulas;
@@ -22,6 +23,7 @@ public class MotorDeInferencia {
     
     public String inferir(String meta) throws IOException{
         int i;
+        moduloJustificacion = "";
         clausulas=BC.recuperarSecuencial();
         hechos=BH.regresaHechos();
         /*for(i = 0; i < clausulas.length; i++){
@@ -72,7 +74,7 @@ public class MotorDeInferencia {
     
     private String[] analisar(Clausula clausula){
         /*Por cada predicado negado de una regla traer los hechos*/
-        /*Todos los hechos del primer predicado ejecutar comparar*/
+        /*Todos los hechos del primer predicado ejecutar unificar*/
         //System.out.println(clausula.muestraClausula());
         int i, j;
         String predicadoNegado, nombrePredicadoNegado, nombreHecho;
@@ -107,12 +109,12 @@ public class MotorDeInferencia {
         for(i = 0; i < hechosDelPrimerPredicado.size(); i++){
             nombreVariablesClausula = new ArrayList<String>();
             valoresVariablesClausula = new ArrayList<String>();
-            comparar(hechosDelPrimerPredicado.get(i), 0, hechosInvolucrados);
+            unificar(hechosDelPrimerPredicado.get(i), 0, hechosInvolucrados);
         }
         return variables;
     }
     
-    private void comparar(String hecho, int predicado, ArrayList<ArrayList<String>> hechosInvolucrados){
+    private void unificar(String hecho, int predicado, ArrayList<ArrayList<String>> hechosInvolucrados){
         /*variable por variable del hecho*/
         /*si la variable no esta agregada*/
             /*se agrega*/
@@ -124,7 +126,7 @@ public class MotorDeInferencia {
         /*si el hecho es el ultimo predicado negado de la regla*/
             /*se aplica*/
         /*si no*/
-            /*vuelve a comparar*/
+            /*vuelve a unificar*/
         int i, j, k, agregados = 0;
         String[] variablesHecho = hecho.split("\\(")[1].split("\\)")[0].split(",");
         String[] nombresVariables = elementoCC.clausula.predicadosNegados[predicado].split("\\(")[1].split("\\)")[0].split(",");
@@ -165,7 +167,7 @@ public class MotorDeInferencia {
         else{
             hechosDelSiguientePredicado = hechosInvolucrados.get(predicado+1);
             for(i = 0; i < hechosDelSiguientePredicado.size(); i++){
-                comparar(hechosDelSiguientePredicado.get(i), predicado+1, hechosInvolucrados);
+                unificar(hechosDelSiguientePredicado.get(i), predicado+1, hechosInvolucrados);
             }
         }
     }
@@ -190,25 +192,40 @@ public class MotorDeInferencia {
         String[] nHechos = new String[R.variables.size()];
         String nombrePredicado = R.clausula.predicado.split("\\(")[0], nuevoHecho;
         String[] variablesPredicado = R.clausula.predicado.split("\\(")[1].split("\\)")[0].split(",");
-        int i, j, k;
+        String justificacion = "";
+        int i, j;
         for(i = 0; i < R.variables.size(); i++){
-            nuevoHecho = nombrePredicado+"(";
-            for(j = 0; j < variablesPredicado.length; j++){
+            for(j = 0; j < 16 && R.clausula.predicadosNegados[j].charAt(0) != '*' && R.clausula.predicadosNegados[j].charAt(0) != ' '; j++){
                 if(j != 0){
-                    nuevoHecho += ",";
+                    justificacion += " ^ ";
                 }
-                for(k = 0; k < R.nombreVariables.length; k++){
-                    if(R.nombreVariables[k].equals(variablesPredicado[j])){
-                        nuevoHecho += R.variables.get(i)[k];
-                    }
-                }
+                justificacion += sustituye(R.clausula.predicadosNegados[j].split("\\(")[1].split("\\)")[0].split(","), R.clausula.predicadosNegados[j].split("\\(")[0], R.variables.get(i), R.nombreVariables);
             }
-            nuevoHecho += ")";
-            System.out.println(nuevoHecho);
+            justificacion += "->";
+            nuevoHecho = sustituye(variablesPredicado, nombrePredicado, R.variables.get(i), R.nombreVariables);
+            justificacion += nuevoHecho;
+            moduloJustificacion += justificacion+"\n";
             nHechos[i] = nuevoHecho;
         }
         conjuntoConflicto.eliminarElemento(R); //eliminar regla usada del conjunto conflicto
         return nHechos;
+    }
+    
+    private String sustituye(String[] variablesPredicado, String nombrePredicado, String[] valoresVariables, String[] nombreVariables){
+        int j, k;
+        String nuevoHecho = nombrePredicado+"(";
+        for(j = 0; j < variablesPredicado.length; j++){
+            if(j != 0){
+                nuevoHecho += ",";
+            }
+            for(k = 0; k < nombreVariables.length; k++){
+                if(nombreVariables[k].equals(variablesPredicado[j])){
+                    nuevoHecho += valoresVariables[k];
+                }
+            }
+        }
+        nuevoHecho += ")";
+        return nuevoHecho;
     }
     
     private void actualizar(String[] nuevosHechos){
