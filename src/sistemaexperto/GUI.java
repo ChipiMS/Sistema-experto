@@ -25,6 +25,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 public class GUI extends JFrame{
     BaseDeConocimientos baseDeConocimientos;
+    AccesoDominio ad = new AccesoDominio();
+    AccesoPredicadoDAO ap;
     JTextArea messages;
     JPanel panelHechos;
     Predicado predicados[] = new Predicado[]{
@@ -88,7 +90,7 @@ public class GUI extends JFrame{
     | |  _| | | || | 
     | |_| | |_| || | 
      \____|\___/|___|*/
-    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos){
+    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos) throws IOException{
         this.baseDeConocimientos = baseDeConocimientos;
         this.baseDeHechos = baseDeHechos;
         Container cp = getContentPane();
@@ -120,7 +122,7 @@ public class GUI extends JFrame{
     | |\/| |/ _ \ '_ \| | | |
     | |  | |  __/ | | | |_| |
     |_|  |_|\___|_| |_|\__,_|*/
-    JMenuBar createMenu(Container cp){
+    JMenuBar createMenu(Container cp)throws IOException{
         JMenuBar menuBar;
         JMenu menu;
         JMenuItem menuItem;
@@ -218,12 +220,45 @@ public class GUI extends JFrame{
             }
         });
         menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Ver predicados");
+        menuItem = new JMenuItem("Mostrar Predicado");
         menuItem.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                JOptionPane.showMessageDialog(cp, "No implementado.");
+                String Imprime="";
+                
+                try {
+                    ap = new AccesoPredicadoDAO();
+                    Imprime = ap.mostrar();
+                    JOptionPane.showMessageDialog(cp, Imprime);
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        menu.add(menuItem);
+        
+        menu.add(menuItem);
+        menuItem = new JMenuItem("Agregar Predicado");
+        menuItem.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                
+                    ap = new AccesoPredicadoDAO();
+                    ap.guardar();                
+            }
+        });
+        menu.add(menuItem);
+        
+        menuItem = new JMenuItem("Eliminar Predicado");
+        menuItem.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    ap = new AccesoPredicadoDAO();
+                    ap.eliminar();
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         menu.add(menuItem);
@@ -232,7 +267,12 @@ public class GUI extends JFrame{
         menuItem.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                JOptionPane.showMessageDialog(cp, "No implementado.");
+                try {
+                    ap = new AccesoPredicadoDAO();
+                    ap.Editar();
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         menu.add(menuItem);
@@ -241,7 +281,20 @@ public class GUI extends JFrame{
         menuItem.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                JOptionPane.showMessageDialog(cp, "No implementado.");
+                try {
+                    ad.mostrar();
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        menu.add(menuItem);
+        
+        menuItem = new JMenuItem("Agregar Dominio");
+        menuItem.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                    ad.guardar();
             }
         });
         menu.add(menuItem);
@@ -250,10 +303,28 @@ public class GUI extends JFrame{
         menuItem.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent ae) {
-                JOptionPane.showMessageDialog(cp, "No implementado.");
+                try {
+                    ad.Editar();
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         menu.add(menuItem);
+        
+        menuItem = new JMenuItem("Eliminar dominio");
+        menuItem.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    ad.eliminar();
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        menu.add(menuItem);
+        
         //Inferir-------------------------------------------------------------------------------------------------------------------------------------------------------------------
         buttonCompile = new JButton("Inferir");
         buttonCompile.setContentAreaFilled(false);
@@ -266,7 +337,8 @@ public class GUI extends JFrame{
                     MotorDeInferencia motor = new MotorDeInferencia(baseDeConocimientos, baseDeHechos);
                     String meta = JOptionPane.showInputDialog(cp, "Meta:", JOptionPane.INPUT_VALUE_PROPERTY), mensaje;
                     mensaje = motor.inferir(meta);
-                    messages.append("\n"+mensaje);
+                    messages.append("\n"+motor.moduloJustificacion);
+                    messages.append(mensaje);
                 } catch (IOException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
