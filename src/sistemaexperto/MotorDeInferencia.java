@@ -41,14 +41,37 @@ public class MotorDeInferencia {
     }
     
     private String[] analisar(){
-        for (int i = 0; i < hechos.length; i++) {
-            /*Buscar en la base de hechos el primer predicado negado
-            y agregar los que encontraste a variables*/
-            /*mientras existan predicados negados y variables.leng>0*/
-            /*Buscar en la base de hechos
-              si no estan quitalos de variables*/
+        /*Por cada predicado negado de una regla traer los hechos*/
+        /*Todos los hechos del primer predicado ejecutar comparar*/
+        for (int i = 0; i < clausulas.length; i++) {
+            String predicadoNegado=clausulas[i].predicadosNegados[i];
+            
+            comparar();
         }
         return variables;
+    }
+    
+    private void comparar(String hecho,String[] variables){
+        /*variable por variable del hecho*/
+        /*si la variable no esta agregada*/
+            /*se agrega*/
+        /*si no*/
+            /*se compara si es igual
+              si no son iguales
+              regresar error no se pudo*/
+        /*fin variable por variable*/
+        /*si el hecho es el ultimo predicado negado de la regla*/
+            /*se aplica*/
+        /*si no*/
+            /*vuelve a comparar*/
+        String[] variableshecho=hecho.split("(")[1].split(")")[0].split(",");
+        for (int i = 0; i < variables.length; i++) {
+            for (int j = 0; j < variableshecho.length; j++) {
+                if(!variables[i].equals(variableshecho[j])){
+                    variables[variables.length]=variableshecho[j];
+                }
+            }
+        }
     }
     
     private boolean contenida(String meta,String[] hechos){
@@ -71,7 +94,7 @@ public class MotorDeInferencia {
     }
     
     private String[] aplicar(Clausula R,String[] hechos){
-        String[] nHechos;
+        String[] nHechos={};
         /*sustituir variable del predicado no negado
           con las variables[] eliminar regla usada del conjunto conflicto*/
         return nHechos;
