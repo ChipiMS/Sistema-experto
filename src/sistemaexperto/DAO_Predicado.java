@@ -8,7 +8,7 @@ package sistemaexperto;
 public class DAO_Predicado {
     String nombre;
     String pred;
-    String[] variables;
+    String[][] variables;
 
 
 }

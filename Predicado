@@ -1,8 +1,28 @@
-a(p,e)
-p tiene una e
-b(e,ti)
-e puede ser de ti
-d(e,s)
-e puede causar s
-f(e,t)
-e se puede solucionar con t
+b(p,ch)
+p sufrió ch
+h(p,sh)
+p sufre sh
+c(p)
+p padece histeria
+d(p,co)
+p sufrió co
+i(p,so)
+p sufre so
+e(p)
+p es obsesivo compulsivo
+f(p,cf)
+p sufrió cf
+j(p,sf)
+p sufre sf
+g(p)
+p tiene fobias
+a(p)
+p padece neurosis
+k(p)
+p necesita ser tratado psicológicamente
+m(s)
+s es un sintoma físico
+o(p,s)
+p sufre s
+l(p)
+p necesita ser tratado psiquiatricamente

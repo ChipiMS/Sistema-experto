@@ -28,8 +28,9 @@ public class AccesoDominio {
             dominio = new Dominio();
             boolean existe = true;
             RandomAccessFile lector = null, escritorIndice, escritor;
-            System.out.println("Nuevo dominio: ");
-            dom = sc.nextLine();
+            dom = JOptionPane.showInputDialog("NUEVO DOMINIO:");
+          
+
             String separa = Pattern.quote(":");
             String[] nombre = dom.split(separa);
             dominio.dominio = nombre[0];
@@ -56,28 +57,31 @@ public class AccesoDominio {
         }
     }
 
-    public void mostrar() throws IOException {
+    public String mostrar() throws IOException {
+        String Imprime = "";
         cont = 0;
         int sig = 0;
         BufferedReader bam;
         bam = new BufferedReader(new FileReader("Dominio"));
-        System.out.println("DOMINIOS");
+        Imprime = Imprime + "DOMINIOS\n";
+     
         Linea = bam.readLine();
         do {
 
             if (sig == 0) {
                 cont = cont + 1;
                 sig = 1;
-                System.out.print(cont + ".- " + Linea);
+                Imprime = Imprime + (cont + ".- " + Linea);
+               
                 Linea = bam.readLine();
             } else {
                 sig = 0;
-                System.out.println(":{" + Linea + "}");
+                Imprime = Imprime + (":{" + Linea + "}\n");
                 Linea = bam.readLine();
             }
         } while (Linea != null);
         bam.close();
-
+        return Imprime;
     }
 
     public Dominio buscar(Dominio dom) throws FileNotFoundException, IOException {
@@ -120,8 +124,7 @@ public class AccesoDominio {
     public String eliminar() throws FileNotFoundException, IOException {
         dominio = new Dominio();
         boolean existe = false;
-        System.out.println("QUE DOMINIO QUIERES ELIMINAR?: ");
-        dominio.dominio = sc.nextLine();
+        dominio.dominio = JOptionPane.showInputDialog(mostrar()+"\nQUE DOMINIO QUIERES ELIMINAR?: ");
         dominio = buscar(dominio);
         if (dominio.variables == null) {
             cont = 0;
@@ -186,8 +189,8 @@ public class AccesoDominio {
 
     public String Editar() throws FileNotFoundException, IOException {
         dominio = new Dominio();
-        System.out.println("QUE DOMINIO QUIERES EDITAR?: ");
-        dominio.dominio = sc.nextLine();
+        dominio.dominio = JOptionPane.showInputDialog(mostrar()+"QUE DOMINIO QUIERES EDITAR?: ");
+
 
         dominio = buscar(dominio);
         if (dominio.variables == null) {
@@ -196,9 +199,9 @@ public class AccesoDominio {
 
         } else {
             cont = 0;
-            System.out.println("DOMINIO A EDITAR: " + dominio.dominio + ":{" + dominio.variables + "}");
-            System.out.print("" + dominio.dominio + ":{");
-            dominio.variables = sc.nextLine();
+            dominio.variables = JOptionPane.showInputDialog("DOMINIO A EDITAR: " + dominio.dominio + ":{" + dominio.variables + "}"
+                    + "" + dominio.dominio + ":{");
+            
             String separaD = Pattern.quote("}");
             String[] dom = dominio.variables.split(separaD);
             dominio.variables = dom[0];

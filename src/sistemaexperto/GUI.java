@@ -1,4 +1,5 @@
 package sistemaexperto;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -23,16 +24,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-public class GUI extends JFrame{
+
+public class GUI extends JFrame {
+
     BaseDeConocimientos baseDeConocimientos;
     AccesoDominio ad = new AccesoDominio();
-    AccesoPredicadoDAO ap;
+    AccesoPredicadoDAO ap = new AccesoPredicadoDAO();
     JTextArea messages;
     JPanel panelHechos;
-    Predicado predicados[] = new Predicado[]{
+    Predicado predicados[] = ap.Predicados();
+/*    Predicado predicados[] = new Predicado[]{
+        
         new Predicado("p sufrió ch", "b(p,ch)", new String[][]{
             new String[]{},
-            new String[]{"Susto"}
+            new String[]{"Susto","Susto 2"}
         }),
         new Predicado("p sufre sh", "h(p,sh)", new String[][]{
             new String[]{},
@@ -79,18 +84,19 @@ public class GUI extends JFrame{
         new Predicado("p necesita ser tratado psiquiatricamente", "l(p)", new String[][]{
             new String[]{}
         })
-    };
+    };*/
     JButton botonesHechos[];
     JPanel panelesHechos[];
     Component variablesHechos[][];
     BaseDeHechos baseDeHechos;
+
     /*
       ____ _   _ ___ 
      / ___| | | |_ _|
     | |  _| | | || | 
     | |_| | |_| || | 
      \____|\___/|___|*/
-    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos) throws IOException{
+    GUI(BaseDeConocimientos baseDeConocimientos, BaseDeHechos baseDeHechos) throws IOException {
         this.baseDeConocimientos = baseDeConocimientos;
         this.baseDeHechos = baseDeHechos;
         Container cp = getContentPane();
@@ -98,14 +104,14 @@ public class GUI extends JFrame{
         setTitle("Compilador");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        
+
         cp.add(createMenu(cp), BorderLayout.NORTH);
 
         panelHechos = new JPanel();
         interfazHechos(panelHechos);
         JScrollPane codeScrollPane = new JScrollPane(panelHechos);
         cp.add(codeScrollPane, BorderLayout.CENTER);
-        
+
         messages = new JTextArea("Mensajes");
         messages.setEnabled(false);
         messages.setBackground(Color.black);
@@ -116,26 +122,37 @@ public class GUI extends JFrame{
 
         setVisible(true);
     }
+
     /*
      __  __              __  
     |  \/  | ___ _ __  _/_/_ 
     | |\/| |/ _ \ '_ \| | | |
     | |  | |  __/ | | | |_| |
     |_|  |_|\___|_| |_|\__,_|*/
-    JMenuBar createMenu(Container cp)throws IOException{
+    JMenuBar createMenu(Container cp) throws IOException {
         JMenuBar menuBar;
-        JMenu menu;
-        JMenuItem menuItem;
+        JMenu menuConocimientos;
+        JMenu menuHechos;
+        JMenu menuDominios;
+        JMenuItem menuItemClausula;
+        JMenuItem menuItemMuestra;
         JButton buttonCompile;
-        JFrame frame = (JFrame)this;
+        JFrame frame = (JFrame) this;
         menuBar = new JMenuBar();
         //Base de conocimientos-------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        menu = new JMenu("Base de conocimientos");
-        menuBar.add(menu);
-        menuItem = new JMenuItem("Mostrar cláusulas");
-        menuItem.addActionListener(new ActionListener(){
+        menuConocimientos = new JMenu("BASE DE CONOCIMIENTOS");
+        menuBar.add(menuConocimientos);
+
+        menuHechos = new JMenu("BASE DE HECHOS");
+        menuBar.add(menuHechos);
+
+        menuDominios = new JMenu("DOMINIOS");
+        menuBar.add(menuDominios);
+
+        menuItemClausula = new JMenuItem("Mostrar cláusulas");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae){
+            public void actionPerformed(ActionEvent ae) {
                 Clausula clausulas[] = null;
                 int i;
                 String reglas = "";
@@ -144,30 +161,28 @@ public class GUI extends JFrame{
                 } catch (IOException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                if(clausulas != null){
-                    for(i = 0; i < clausulas.length; i++){
-                        reglas += clausulas[i].muestraClausula()+"\n";
+                if (clausulas != null) {
+                    for (i = 0; i < clausulas.length; i++) {
+                        reglas += clausulas[i].muestraClausula() + "\n";
                     }
-                }
-                else{
+                } else {
                     reglas = "Hubo un error al recuperar las cláusulas.";
                 }
                 JOptionPane.showMessageDialog(cp, reglas);
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Actualizar cláusula");
-        menuItem.addActionListener(new ActionListener(){
+        menuConocimientos.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Actualizar cláusula");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent ae){
+            public void actionPerformed(ActionEvent ae) {
                 try {
-                    int llave = Integer.parseInt( JOptionPane.showInputDialog(cp, "Llave de la cláusula a actualizar:", JOptionPane.INPUT_VALUE_PROPERTY));
+                    int llave = Integer.parseInt(JOptionPane.showInputDialog(cp, "Llave de la cláusula a actualizar:", JOptionPane.INPUT_VALUE_PROPERTY));
                     Clausula clausula = baseDeConocimientos.recuperarAleatorio(llave);
-                    if(clausula != null){
+                    if (clausula != null) {
                         new FormularioClausula(clausula, baseDeConocimientos, true);
-                    }
-                    else{
+                    } else {
                         JOptionPane.showMessageDialog(cp, "No existe una cláusula con esa llave.");
                     }
                 } catch (IOException ex) {
@@ -175,21 +190,20 @@ public class GUI extends JFrame{
                 }
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Nueva cláusula");
-        menuItem.addActionListener(new ActionListener(){
+        menuConocimientos.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Nueva cláusula");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    int llave = Integer.parseInt( JOptionPane.showInputDialog(cp, "Llave de la nueva cláusula", JOptionPane.INPUT_VALUE_PROPERTY));
+                    int llave = Integer.parseInt(JOptionPane.showInputDialog(cp, "Llave de la nueva cláusula", JOptionPane.INPUT_VALUE_PROPERTY));
                     Clausula clausula = baseDeConocimientos.recuperarAleatorio(llave);
-                    if(clausula == null){
+                    if (clausula == null) {
                         clausula = new Clausula();
                         clausula.llave = llave;
                         new FormularioClausula(clausula, baseDeConocimientos, false);
-                    }
-                    else{
+                    } else {
                         JOptionPane.showMessageDialog(cp, "Ya existe una cláusula con esa llave.");
                     }
                 } catch (IOException ex) {
@@ -197,19 +211,18 @@ public class GUI extends JFrame{
                 }
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Borrar cláusula");
-        menuItem.addActionListener(new ActionListener(){
+        menuConocimientos.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Borrar cláusula");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    int llave = Integer.parseInt( JOptionPane.showInputDialog(cp, "Llave de la cláusula que se va a borrar", JOptionPane.INPUT_VALUE_PROPERTY));
+                    int llave = Integer.parseInt(JOptionPane.showInputDialog(cp, "Llave de la cláusula que se va a borrar", JOptionPane.INPUT_VALUE_PROPERTY));
                     Clausula clausula = baseDeConocimientos.recuperarAleatorio(llave);
-                    if(clausula != null){
+                    if (clausula != null) {
                         baseDeConocimientos.borrar(llave);
-                    }
-                    else{
+                    } else {
                         JOptionPane.showMessageDialog(cp, "No existe una cláusula con esa llave.");
                     }
                 } catch (IOException ex) {
@@ -219,38 +232,37 @@ public class GUI extends JFrame{
                 }
             }
         });
-        menu.add(menuItem);
-        menuItem = new JMenuItem("Mostrar Predicado");
-        menuItem.addActionListener(new ActionListener(){
+        menuConocimientos.add(menuItemClausula);
+
+        menuItemMuestra = new JMenuItem("Mostrar Predicado");
+        menuItemMuestra.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                String Imprime="";
-                
+
                 try {
-                    ap = new AccesoPredicadoDAO();
-                    Imprime = ap.mostrar();
-                    JOptionPane.showMessageDialog(cp, Imprime);
+                    //ap.Predicados();
+                    JOptionPane.showMessageDialog(cp, ap.mostrar());
                 } catch (IOException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-        menu.add(menuItem);
-        
-        menu.add(menuItem);
-        menuItem = new JMenuItem("Agregar Predicado");
-        menuItem.addActionListener(new ActionListener(){
+        menuHechos.add(menuItemMuestra);
+
+        menuConocimientos.add(menuItemClausula);
+        menuItemClausula = new JMenuItem("Agregar Predicado");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                
-                    ap = new AccesoPredicadoDAO();
-                    ap.guardar();                
+            
+                    ap.guardar();
+     
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Eliminar Predicado");
-        menuItem.addActionListener(new ActionListener(){
+        menuHechos.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Eliminar Predicado");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
@@ -261,10 +273,10 @@ public class GUI extends JFrame{
                 }
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Modificar predicado");
-        menuItem.addActionListener(new ActionListener(){
+        menuHechos.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Modificar predicado");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
@@ -275,32 +287,33 @@ public class GUI extends JFrame{
                 }
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Ver dominios");
-        menuItem.addActionListener(new ActionListener(){
+        menuHechos.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Ver dominios");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    ad.mostrar();
+                    
+                    JOptionPane.showMessageDialog(cp, ad.mostrar());
                 } catch (IOException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Agregar Dominio");
-        menuItem.addActionListener(new ActionListener(){
+        menuDominios.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Agregar Dominio");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                    ad.guardar();
+                ad.guardar();
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Modificar dominio");
-        menuItem.addActionListener(new ActionListener(){
+        menuDominios.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Modificar dominio");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
@@ -310,10 +323,10 @@ public class GUI extends JFrame{
                 }
             }
         });
-        menu.add(menuItem);
-        
-        menuItem = new JMenuItem("Eliminar dominio");
-        menuItem.addActionListener(new ActionListener(){
+        menuDominios.add(menuItemClausula);
+
+        menuItemClausula = new JMenuItem("Eliminar dominio");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
@@ -323,21 +336,21 @@ public class GUI extends JFrame{
                 }
             }
         });
-        menu.add(menuItem);
-        
+        menuDominios.add(menuItemClausula);
+
         //Inferir-------------------------------------------------------------------------------------------------------------------------------------------------------------------
         buttonCompile = new JButton("Inferir");
         buttonCompile.setContentAreaFilled(false);
         buttonCompile.setBorderPainted(false);
         buttonCompile.setFocusPainted(false);
-        buttonCompile.addActionListener(new ActionListener(){
+        buttonCompile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
                     MotorDeInferencia motor = new MotorDeInferencia(baseDeConocimientos, baseDeHechos);
                     String meta = JOptionPane.showInputDialog(cp, "Meta:", JOptionPane.INPUT_VALUE_PROPERTY), mensaje;
                     mensaje = motor.inferir(meta);
-                    messages.append("\n"+motor.moduloJustificacion);
+                    messages.append("\n" + motor.moduloJustificacion);
                     messages.append(mensaje);
                 } catch (IOException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
@@ -345,11 +358,11 @@ public class GUI extends JFrame{
             }
         });
         menuBar.add(buttonCompile);
-        
+
         return menuBar;
     }
-    
-    private void interfazHechos(JPanel panelHechos){
+
+    private void interfazHechos(JPanel panelHechos) {
         panelHechos.setLayout(new BoxLayout(panelHechos, BoxLayout.PAGE_AXIS));
         int i, j, k;
         JPanel predicado;
@@ -358,22 +371,21 @@ public class GUI extends JFrame{
         botonesHechos = new JButton[predicados.length];
         variablesHechos = new Component[predicados.length][10];
         JComboBox combo;
-        for(i = 0; i < predicados.length; i++){
+        for (i = 0; i < predicados.length; i++) {
             panelesHechos[i] = new JPanel();
             panelesHechos[i].setLayout(new BoxLayout(panelesHechos[i], BoxLayout.PAGE_AXIS));
-            panelesHechos[i].add(new JLabel(predicados[i].predicado+": "+predicados[i].nombre));
+            panelesHechos[i].add(new JLabel(predicados[i].predicado + ": " + predicados[i].nombre));
             nombreVariables = predicados[i].predicado.split("\\(")[1].split("\\)")[0].split(",");
             predicado = new JPanel();
             predicado.setLayout(new FlowLayout());
-            for(j = 0; j < predicados[i].variables.length; j++){
-                predicado.add(new JLabel(nombreVariables[j]+":"));
-                if(predicados[i].variables[j].length == 0){
+            for (j = 0; j < predicados[i].variables.length; j++) {
+                predicado.add(new JLabel(nombreVariables[j] + ":"));
+                if (predicados[i].variables[j].length == 0) {
                     variablesHechos[i][j] = new JTextField();
                     variablesHechos[i][j].setPreferredSize(new Dimension(100, 30));
-                }
-                else{
+                } else {
                     combo = new JComboBox<>();
-                    for(k = 0; k < predicados[i].variables[j].length; k++){
+                    for (k = 0; k < predicados[i].variables[j].length; k++) {
                         combo.addItem(predicados[i].variables[j][k]);
                     }
                     variablesHechos[i][j] = combo;
@@ -384,25 +396,24 @@ public class GUI extends JFrame{
             botonesHechos[i] = new JButton("Agregar hecho");
             botonesHechos[i].addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent ae){
+                public void actionPerformed(ActionEvent ae) {
                     int i, indicePredicado = 0;
                     String hecho;
-                    for(i = 0; i < predicados.length; i++){
-                        if(ae.getSource() == botonesHechos[i]){
+                    for (i = 0; i < predicados.length; i++) {
+                        if (ae.getSource() == botonesHechos[i]) {
                             indicePredicado = i;
                         }
                     }
                     hecho = predicados[indicePredicado].predicado.split("\\(")[0];
                     hecho += "(";
-                    for(i = 0; i < predicados[indicePredicado].variables.length; i++){
-                        if(i > 0){
+                    for (i = 0; i < predicados[indicePredicado].variables.length; i++) {
+                        if (i > 0) {
                             hecho += ",";
                         }
-                        if(predicados[indicePredicado].variables[i].length == 0){
-                            hecho += ((JTextField)variablesHechos[indicePredicado][i]).getText();
-                        }
-                        else{
-                            hecho += ((JComboBox)variablesHechos[indicePredicado][i]).getSelectedItem();
+                        if (predicados[indicePredicado].variables[i].length == 0) {
+                            hecho += ((JTextField) variablesHechos[indicePredicado][i]).getText();
+                        } else {
+                            hecho += ((JComboBox) variablesHechos[indicePredicado][i]).getSelectedItem();
                         }
                     }
                     hecho += ")";
