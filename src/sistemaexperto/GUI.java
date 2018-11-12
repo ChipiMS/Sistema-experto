@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -24,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
 
 public class GUI extends JFrame {
 
@@ -118,6 +118,7 @@ public class GUI extends JFrame {
         JScrollPane messagesScrollPane = new JScrollPane(messages);
         messagesScrollPane.setMinimumSize(new Dimension(100, 200));
         messagesScrollPane.setPreferredSize(new Dimension(100, 200));
+        messagesScrollPane.setAlignmentX(LEFT_ALIGNMENT);
         cp.add(messagesScrollPane, BorderLayout.SOUTH);
 
         setVisible(true);
@@ -140,13 +141,13 @@ public class GUI extends JFrame {
         JFrame frame = (JFrame) this;
         menuBar = new JMenuBar();
         //Base de conocimientos-------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        menuConocimientos = new JMenu("BASE DE CONOCIMIENTOS");
+        menuConocimientos = new JMenu("Base de conocimientos");
         menuBar.add(menuConocimientos);
 
-        menuHechos = new JMenu("BASE DE HECHOS");
+        menuHechos = new JMenu("Predicados");
         menuBar.add(menuHechos);
 
-        menuDominios = new JMenu("DOMINIOS");
+        menuDominios = new JMenu("Dominios");
         menuBar.add(menuDominios);
 
         menuItemClausula = new JMenuItem("Mostrar cláusulas");
@@ -348,10 +349,12 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent ae) {
                 try {
                     MotorDeInferencia motor = new MotorDeInferencia(baseDeConocimientos, baseDeHechos);
-                    String meta = JOptionPane.showInputDialog(cp, "Meta:", JOptionPane.INPUT_VALUE_PROPERTY), mensaje;
-                    mensaje = motor.inferir(meta);
-                    messages.append("\n" + motor.moduloJustificacion);
-                    messages.append(mensaje);
+                    String meta = JOptionPane.showInputDialog(cp, "Escribe una meta o deja vacío para inferir sin meta.", JOptionPane.INPUT_VALUE_PROPERTY), mensaje;
+                    if(meta != null){
+                        mensaje = motor.inferir(meta);
+                        messages.append("\n" + motor.moduloJustificacion);
+                        messages.append(mensaje);
+                    }
                 } catch (IOException ex) {
                     Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -374,10 +377,13 @@ public class GUI extends JFrame {
         for (i = 0; i < predicados.length; i++) {
             panelesHechos[i] = new JPanel();
             panelesHechos[i].setLayout(new BoxLayout(panelesHechos[i], BoxLayout.PAGE_AXIS));
+            panelesHechos[i].setAlignmentX(LEFT_ALIGNMENT);
+            panelesHechos[i].setBorder(new EmptyBorder(10, 10, 10, 10));
             panelesHechos[i].add(new JLabel(predicados[i].predicado + ": " + predicados[i].nombre));
             nombreVariables = predicados[i].predicado.split("\\(")[1].split("\\)")[0].split(",");
             predicado = new JPanel();
-            predicado.setLayout(new FlowLayout());
+            predicado.setLayout(new BoxLayout(predicado, BoxLayout.LINE_AXIS));
+            predicado.setAlignmentX(LEFT_ALIGNMENT);
             for (j = 0; j < predicados[i].variables.length; j++) {
                 predicado.add(new JLabel(nombreVariables[j] + ":"));
                 if (predicados[i].variables[j].length == 0) {

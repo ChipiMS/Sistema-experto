@@ -38,7 +38,7 @@ public class MotorDeInferencia {
         }
         conjuntoConflicto = new ConjuntoConflicto();
         equiparar();
-        while(!contenida(meta,hechos) && !conjuntoConflicto.estaVacio()){
+        while((meta.length() == 0 || !contenida(meta, hechos)) && !conjuntoConflicto.estaVacio()){
             if(!conjuntoConflicto.estaVacio()){
                 String[] nuevosHechos;
                 R=resolver();
@@ -48,12 +48,15 @@ public class MotorDeInferencia {
             hechos=BH.regresaHechos();
             equiparar();
         }
-        if(contenida(meta,hechos)){
-            return meta+" es cierto.";
+        if(meta.length() > 0){
+            if(contenida(meta,hechos)){
+                return meta+" es cierto.";
+            }
+            else{
+                return meta+" es falso.";
+            }
         }
-        else{
-            return meta+" es falso.";
-        }
+        return "Fin de la inferencia";
     }
     
     private void equiparar(){
