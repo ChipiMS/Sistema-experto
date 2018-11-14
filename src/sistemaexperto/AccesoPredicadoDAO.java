@@ -109,7 +109,7 @@ public class AccesoPredicadoDAO {
                     Linea = lin4.readLine();
 
                 } while (Linea != null);
-                lin2.close();
+                lin4.close();
 
             }
 
