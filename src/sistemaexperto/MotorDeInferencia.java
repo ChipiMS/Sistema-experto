@@ -236,15 +236,5 @@ public class MotorDeInferencia {
             BH.agregarHecho(nuevosHechos[i]);
         }
     }
-    private ArrayList<Clausula> busquedaConsecuente(String meta) throws IOException {
-        int posicion;
-        ArrayList<Clausula> cc=new ArrayList<>();
-        Clausula[]Conocimiento=this.BC.recuperarSecuencial();
 
-        for (posicion=0;posicion<Conocimiento.length;posicion++){
-            if(Conocimiento[posicion].predicado.equals(meta))
-                cc.add(Conocimiento[posicion]);
-        }
-        return cc;
-    }
 }
