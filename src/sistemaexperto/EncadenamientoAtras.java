@@ -11,7 +11,7 @@ public class EncadenamientoAtras {
         int i;
         reglas=busquedaConsecuente(meta,BC);
         for(i=0;i<reglas.size();i++){
-            if(EvaluarRegla.evaluarRegla(BC,BH,meta,reglas[i]))
+            if(EvaluarRegla.evaluarRegla(BC,BH,meta,reglas.get(i)))
                 return true;
         }
         reply=JOptionPane.showConfirmDialog(null,"¿tiene usted"+meta+"?","Pregunta",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
