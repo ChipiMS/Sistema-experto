@@ -134,13 +134,13 @@ public class GUI extends JFrame {
         JMenuBar menuBar;
         JMenu menuConocimientos;
         JMenu menuHechos;
-        JMenu menuDominios;
+        JMenu menuDominios, menuInferir;
         JMenuItem menuItemClausula;
         JMenuItem menuItemMuestra;
         JButton buttonCompile;
         JFrame frame = (JFrame) this;
         menuBar = new JMenuBar();
-        //Base de conocimientos-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        
         menuConocimientos = new JMenu("Base de conocimientos");
         menuBar.add(menuConocimientos);
 
@@ -149,7 +149,11 @@ public class GUI extends JFrame {
 
         menuDominios = new JMenu("Dominios");
         menuBar.add(menuDominios);
-
+        
+        menuInferir = new JMenu("Inferir");
+        menuBar.add(menuInferir);
+        
+        //Base de conocimientos-------------------------------------------------------------------------------------------------------------------------------------------------------------------
         menuItemClausula = new JMenuItem("Mostrar cláusulas");
         menuItemClausula.addActionListener(new ActionListener() {
             @Override
@@ -235,6 +239,7 @@ public class GUI extends JFrame {
         });
         menuConocimientos.add(menuItemClausula);
 
+        //Base de hechos-------------------------------------------------------------------------------------------------------------------------------------------------------------------
         menuItemMuestra = new JMenuItem("Mostrar Predicado");
         menuItemMuestra.addActionListener(new ActionListener() {
             @Override
@@ -289,7 +294,8 @@ public class GUI extends JFrame {
             }
         });
         menuHechos.add(menuItemClausula);
-
+        
+        //Dominios-------------------------------------------------------------------------------------------------------------------------------------------------------------------
         menuItemClausula = new JMenuItem("Ver dominios");
         menuItemClausula.addActionListener(new ActionListener() {
             @Override
@@ -340,11 +346,8 @@ public class GUI extends JFrame {
         menuDominios.add(menuItemClausula);
 
         //Inferir-------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        buttonCompile = new JButton("Inferir");
-        buttonCompile.setContentAreaFilled(false);
-        buttonCompile.setBorderPainted(false);
-        buttonCompile.setFocusPainted(false);
-        buttonCompile.addActionListener(new ActionListener() {
+        menuItemClausula = new JMenuItem("Con encadenamiento hacia adelante");
+        menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
@@ -360,7 +363,25 @@ public class GUI extends JFrame {
                 }
             }
         });
-        menuBar.add(buttonCompile);
+        menuInferir.add(menuItemClausula);
+        
+        menuItemClausula = new JMenuItem("Con encadenamiento hacia atras");
+        menuItemClausula.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                try {
+                    
+                    String meta = JOptionPane.showInputDialog(cp, "Escribe una meta por favor.", JOptionPane.INPUT_VALUE_PROPERTY), mensaje;
+                    if(meta != null && meta.length() > 0){
+                        EncadenamientoAtras.inferir(baseDeConocimientos, baseDeHechos, meta);
+                        //Módulo de justificación
+                    }
+                } catch (IOException ex) {
+                    Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        menuInferir.add(menuItemClausula);
 
         return menuBar;
     }
