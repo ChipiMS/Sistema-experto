@@ -365,12 +365,11 @@ public class GUI extends JFrame {
         });
         menuInferir.add(menuItemClausula);
         
-        menuItemClausula = new JMenuItem("Con encadenamiento hacia atras");
+        menuItemClausula = new JMenuItem("Con encadenamiento hacia atrás");
         menuItemClausula.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    
                     String meta = JOptionPane.showInputDialog(cp, "Escribe una meta por favor.", JOptionPane.INPUT_VALUE_PROPERTY), mensaje;
                     if(meta != null && meta.length() > 0){
                         EncadenamientoAtras.inferir(baseDeConocimientos, baseDeHechos, meta);
