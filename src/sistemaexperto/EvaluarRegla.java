@@ -7,8 +7,14 @@ package sistemaexperto;
 
 /**
  *
- * @author Israel-Moreno
+ * @author Adrian Rodriguez
  */
 public class EvaluarRegla {
     
+    BaseDeConocimientos BC;
+    BaseDeHechos BH;
+    public static void evaluarRegla(BaseDeConocimientos BC, BaseDeHechos BH)
+    {
+       String [] hechos = BH.regresaHechos();
+    }
 }
