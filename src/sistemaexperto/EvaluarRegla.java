@@ -19,12 +19,12 @@ public class EvaluarRegla {
     public static boolean evaluarRegla(BaseDeConocimientos BC, BaseDeHechos BH, String meta, Clausula clausula)
     {
        String [] hechos = BH.regresaHechos();
-       clausula = sustituir(clausula,meta);//metodo para sustuir variables de la meta en la regla
-       for(int i=0;i<clausula.predicadosNegados.length;i++)
+       Clausula cl_sustituida = SustituirVariables.sustituye(clausula,meta);//metodo para sustuir variables de la meta en la regla
+       for(int i=0;i<cl_sustituida.predicadosNegados.length;i++)
        {
-           predicado_negado = clausula.predicadosNegados[i];
+           predicado_negado = cl_sustituida.predicadosNegados[i];
            if(predicado_negado.charAt(0) != '*' && predicado_negado.charAt(0) != ' '){
-               if(!evaluarPredicado( BC,  BH,  predicado_negado))
+               if(!evaluarPredicado( BC,  BH,  predicado_negado,clausula.predicadosNegados[i]))
                    return false; //return false on evaluarRegla
            }    
        }
@@ -34,7 +34,7 @@ public class EvaluarRegla {
     {
         return null;
     }
-    public static boolean evaluarPredicado(BaseDeConocimientos BC, BaseDeHechos BH, String meta)
+    public static boolean evaluarPredicado(BaseDeConocimientos BC, BaseDeHechos BH, String meta,String cl)
     {
         return false;
     }
