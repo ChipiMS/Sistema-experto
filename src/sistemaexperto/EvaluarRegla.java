@@ -5,6 +5,8 @@
  */
 package sistemaexperto;
 
+import java.io.IOException;
+
 /**
  *
  * @author Adrian Rodriguez
@@ -16,7 +18,7 @@ public class EvaluarRegla {
     boolean flag =true;
     static String meta, predicado_negado;
     
-    public static boolean evaluarRegla(BaseDeConocimientos BC, BaseDeHechos BH, String meta, Clausula clausula)
+    public static boolean evaluarRegla(BaseDeConocimientos BC, BaseDeHechos BH, String meta, Clausula clausula) throws IOException
     {
        String [] hechos = BH.regresaHechos();
        Clausula cl_sustituida = SustituirVariables.sustituye(clausula,meta);//metodo para sustuir variables de la meta en la regla
