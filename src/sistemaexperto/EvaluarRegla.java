@@ -24,7 +24,9 @@ public class EvaluarRegla {
        {
            predicado_negado = cl_sustituida.predicadosNegados[i];
            if(predicado_negado.charAt(0) != '*' && predicado_negado.charAt(0) != ' '){
-               if(!evaluarPredicado( BC,  BH,  predicado_negado,clausula.predicadosNegados[i]))
+               System.out.println( predicado_negado);
+               System.out.println(clausula.predicadosNegados[i]);
+               if(!EvaluarPredicado.evaluarPredicado( BC,  BH,  predicado_negado,clausula.predicadosNegados[i]))
                    return false; //return false on evaluarRegla
            }    
        }
@@ -34,7 +36,7 @@ public class EvaluarRegla {
     {
         return null;
     }
-    public static boolean evaluarPredicado(BaseDeConocimientos BC, BaseDeHechos BH, String meta,String cl)
+    public static boolean EvaluarPredicado(BaseDeConocimientos BC, BaseDeHechos BH, String meta,String cl)
     {
         return false;
     }
