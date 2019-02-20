@@ -3,21 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/MotorDeInferencia.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/DAO_Predicado.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/FormularioClausula.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/SistemaExperto.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/AccesoPredicadoDAO.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/BaseDeConocimientos.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/Nodo.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/AccesoDominio.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/Indice.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/Predicado.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/ElementoCC.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/GUI.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/Arbol.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/BaseDeHechos.java</file>
-            <file>file:/C:/Users/fejsr/Documents/GitHub/Sistema-experto/src/sistemaexperto/Dominio.java</file>
+            <file>file:/C:/Users/obito/Documents/Sistema-experto/src/sistemaexperto/SistemaExperto.java</file>
+            <file>file:/C:/Users/obito/Documents/Sistema-experto/src/sistemaexperto/SustituirVariables.java</file>
+            <file>file:/C:/Users/obito/Documents/Sistema-experto/src/sistemaexperto/GUI.java</file>
+            <file>file:/C:/Users/obito/Documents/Sistema-experto/src/sistemaexperto/EvaluarRegla.java</file>
+            <file>file:/C:/Users/obito/Documents/Sistema-experto/src/sistemaexperto/Clausula.java</file>
+            <file>file:/C:/Users/obito/Documents/Sistema-experto/src/sistemaexperto/MotorDeInferencia.java</file>
+            <file>file:/C:/Users/obito/Documents/Sistema-experto/src/sistemaexperto/EvaluarPredicado.java</file>
+            <file>file:/C:/Users/obito/Documents/Sistema-experto/src/sistemaexperto/EncadenamientoAtras.java</file>
         </group>
     </open-files>
 </project-private>
