@@ -48,6 +48,7 @@ public class EvaluarRegla {
            }
        }
        EncadenamientoAtras.justificacion += "->"+meta;
+       BH.agregarHecho(meta);
        return true; //todas pasaron
     }
     public static Clausula sustituir(Clausula regla, String meta)

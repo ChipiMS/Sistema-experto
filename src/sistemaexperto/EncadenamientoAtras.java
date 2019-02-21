@@ -18,6 +18,7 @@ public class EncadenamientoAtras {
         reply=JOptionPane.showConfirmDialog(null,"¿Tiene usted "+meta+"?","Pregunta",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
         if(reply== JOptionPane.YES_OPTION){
             EncadenamientoAtras.justificacion += "\n"+meta+" fue proporcionado por el usuario.";
+            BH.agregarHecho(meta);
             return meta;
         }
         return "";
