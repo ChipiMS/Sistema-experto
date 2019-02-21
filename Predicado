@@ -26,3 +26,17 @@ o(p,s)
 p sufre s
 l(p)
 p necesita ser tratado psiquiatricamente
+A(x)
+ primer regla
+B(x)
+ segunda regla
+C(x)
+ tercer regla
+P(x)
+ cuarta regla
+R(x)
+ quinto predicado
+Q(x)
+ sexto predicado
+W(x)
+ sexto predicado
