@@ -8,12 +8,12 @@ public class EvaluarPredicado {
     BaseDeHechos BH;
     String meta;
 
-    public static boolean evaluarPredicado(BaseDeConocimientos BC, BaseDeHechos BH, String meta, String regla) throws IOException {
-        boolean es_hecho = false;
-        int j, k;
-        String[]   variables;
+    public static String evaluarPredicado(BaseDeConocimientos BC, BaseDeHechos BH, String meta, String regla) throws IOException {
+        int j, v;
+        String[]   variables, variables_meta, variables_regla;
         String[] hechos = BH.regresaHechos();
-        String nombre_predicado,nombre_meta,hecho,variables_meta, variable_regla;
+        String nombre_meta, hecho;
+        boolean funciona;
         //Por cada hecho de la base de hechos
         for (j = 0; j < hechos.length; j++) {
             //Extraer el nombre de la meta y del hecho, y si son los mismos
@@ -22,31 +22,32 @@ public class EvaluarPredicado {
 
             //Por cada hecho de la base de hechos
             if (hecho.equals(nombre_meta)) {
-                //nombre_predicado = regla.split("\\(")[0];
-                for (int v = 0; v < hechos.length; v++) {
-
-                    variables_meta = meta.split("\\(")[0].split("\\)")[0]; // variable de la meta
-                    variables = hechos[v].split("\\(")[1].split("\\)")[0].split(","); //variable del hecho
+                variables_meta = meta.split("\\(")[1].split("\\)")[0].split(","); // variable de la meta
+                variables = hechos[j].split("\\(")[1].split("\\)")[0].split(","); //variable del hecho
+                funciona = true;
+                for(v = 0; v < variables_meta.length; v++){
                     //Variable por variable de la meta
                     //Si es igual a la variable del hecho
-                    if (variables[v].equals(variables_meta)) {
-                        es_hecho = true; //Terminar bien
-                    } else {
+                    //System.out.println(meta);
+                    //System.out.println(hechos[j]);
+                    //System.out.println(regla);
+                    //System.out.println(variables[v]);
+                    //System.out.println(variables_meta[v]);
+                    //System.out.println(variables[v].equals(variables_meta[v]));
+                    if(!variables[v].equals(variables_meta[v])){
                         //Si es igual la variable de la meta y el nombre de la variable en la regla
-                        variable_regla = regla.split("\\(")[0]; //variable de la regla ---AQUI NO ENTENDI MUY BIEN
-                        if (variable_regla.equals(variables_meta)) {
-                            es_hecho = true;//Terminar bien
-                        } else {
-                            es_hecho = false;
-                            EncadenamientoAtras.inferir(BC, BH, meta);
+                        variables_regla = regla.split("\\(")[1].split("\\)")[0].split(","); //variable de la regla ---AQUI NO ENTENDI MUY BIEN
+                        if (!variables_regla[v].equals(variables_meta[v])) {
+                            funciona = false;
                         }
                     }
-
+                }
+                if(funciona){
+                    return hechos[j];
                 }
             }
-
         }
-        return es_hecho;
+        return EncadenamientoAtras.inferir(BC, BH, meta);
     }
 
 }

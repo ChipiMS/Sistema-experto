@@ -20,18 +20,34 @@ public class EvaluarRegla {
     
     public static boolean evaluarRegla(BaseDeConocimientos BC, BaseDeHechos BH, String meta, Clausula clausula) throws IOException
     {
-       String [] hechos = BH.regresaHechos();
+        int i, ultimo = 0;
+       String resultadoEvaluacion;
        Clausula cl_sustituida = SustituirVariables.sustituye(clausula,meta);//metodo para sustuir variables de la meta en la regla
-       for(int i=0;i<cl_sustituida.predicadosNegados.length;i++)
+       for(i=0;i<cl_sustituida.predicadosNegados.length;i++)
        {
            predicado_negado = cl_sustituida.predicadosNegados[i];
            if(predicado_negado.charAt(0) != '*' && predicado_negado.charAt(0) != ' '){
-               System.out.println( predicado_negado);
-               System.out.println(clausula.predicadosNegados[i]);
-               if(!EvaluarPredicado.evaluarPredicado( BC,  BH,  predicado_negado,clausula.predicadosNegados[i]))
+               //System.out.println( predicado_negado);
+               //System.out.println(clausula.predicadosNegados[i]);
+               ultimo = i;
+               resultadoEvaluacion = EvaluarPredicado.evaluarPredicado( BC,  BH,  predicado_negado,clausula.predicadosNegados[i]);
+               cl_sustituida.predicadosNegados[i] = resultadoEvaluacion;
+               if(resultadoEvaluacion.length() == 0)
                    return false; //return false on evaluarRegla
            }    
        }
+       EncadenamientoAtras.justificacion += "\n";
+       for(i=0;i<cl_sustituida.predicadosNegados.length;i++)
+       {
+           predicado_negado = cl_sustituida.predicadosNegados[i];
+           if(predicado_negado.charAt(0) != '*' && predicado_negado.charAt(0) != ' '){
+               EncadenamientoAtras.justificacion += predicado_negado;
+               if(i != ultimo){
+                   EncadenamientoAtras.justificacion += "^";
+               }
+           }
+       }
+       EncadenamientoAtras.justificacion += "->"+meta;
        return true; //todas pasaron
     }
     public static Clausula sustituir(Clausula regla, String meta)

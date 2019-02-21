@@ -33,8 +33,7 @@ public class GUI extends JFrame {
     JTextArea messages;
     JPanel panelHechos;
     Predicado predicados[] = ap.Predicados();
-/*    Predicado predicados[] = new Predicado[]{
-        
+    /*Predicado predicados[] = new Predicado[]{
         new Predicado("p sufrió ch", "b(p,ch)", new String[][]{
             new String[]{},
             new String[]{"Susto","Susto 2"}
@@ -372,7 +371,15 @@ public class GUI extends JFrame {
                 try {
                     String meta = JOptionPane.showInputDialog(cp, "Escribe una meta por favor.", JOptionPane.INPUT_VALUE_PROPERTY), mensaje;
                     if(meta != null && meta.length() > 0){
-                        EncadenamientoAtras.inferir(baseDeConocimientos, baseDeHechos, meta);
+                        EncadenamientoAtras.justificacion = "";
+                        mensaje = EncadenamientoAtras.inferir(baseDeConocimientos, baseDeHechos, meta);
+                        messages.append(EncadenamientoAtras.justificacion);
+                        if(mensaje.length() > 0){
+                            messages.append("\n"+meta+" es cierto.");
+                        }
+                        else{
+                            messages.append("\n"+meta+" es falso.");
+                        }
                         //Módulo de justificación
                     }
                 } catch (IOException ex) {
